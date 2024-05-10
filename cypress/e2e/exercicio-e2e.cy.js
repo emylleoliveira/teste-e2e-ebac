@@ -1,4 +1,5 @@
 /// <reference types="cypress" />
+const perfil = require ('../fixtures/perfil.json')
 import { PhoneModule, faker } from '@faker-js/faker';
 
 
@@ -20,29 +21,22 @@ context('Exercicio - Testes End-to-end - Fluxo de pedido', () => {
 
       //Login
 
-      cy.login('emylle.teste@teste.com.br', 'teste@123')
+      cy.login(perfil.usuario, perfil.senha)
         cy.get('.woocommerce-MyAccount-content > :nth-child(2)').should('contain', 'Olá, emylle.teste (não é emylle.teste? Sair)')
 
         //Pedido de 4 produtos 
         cy.visit('produtos')
-        cy.get('.products >.row')
-        .contains ('Ariel Roll Sleeve Sweatshirt').click()
-        cy.get('.button-variable-item-XS') .click()
-        cy.get('.button-variable-item-Red') .click()
-        cy.get('.input-text').clear().type(4)
-        cy.get('.single_add_to_cart_button').click()
+
+        cy.produtoCarrinho('Ariel Roll Sleeve Sweatshirt', '4')
+        
 
 
         //Checkout
 
         cy.visit('/checkout')
-        cy.get('#billing_first_name').type(faker.person.firstName())
-        cy.get('#billing_last_name').type(faker.person.lastName())
-        cy.get('#billing_address_1').type(faker.location.streetAddress())
-        cy.get('#billing_city').type(faker.location.city())
-        cy.get('#billing_postcode').clear().type(68120000)
-        cy.get('#billing_phone').clear().type('71985465212')
-        cy.get('#payment_method_cod').click()
+
+        cy.preCadastro(faker.person.firstName(),faker.person.lastName(),faker.location.streetAddress(),faker.location.city(),'68120000','71985465212')
+        
 
         
         //Validação da compra
